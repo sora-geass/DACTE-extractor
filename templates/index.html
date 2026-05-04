@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Extraia dados de DACTE/CT-e PDFs e exporte para Excel automaticamente">
+    <title>DACTE PDF Extractor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Animated background particles -->
+    <div class="bg-particles" id="bgParticles"></div>
+    
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <rect x="2" y="4" width="20" height="26" rx="2" stroke="currentColor" stroke-width="2"/>
+                        <rect x="10" y="2" width="20" height="26" rx="2" fill="var(--primary)" opacity="0.3" stroke="currentColor" stroke-width="2"/>
+                        <path d="M15 12h10M15 16h10M15 20h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1>DACTE Extractor</h1>
+                    <p class="subtitle">PDF → Excel em segundos</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Upload Card -->
+        <div class="card upload-card" id="uploadCard">
+            <div class="upload-zone" id="uploadZone">
+                <div class="upload-icon">
+                    <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                        <path d="M32 44V20M32 20L22 30M32 20L42 30" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 44V48C12 50.2091 13.7909 52 16 52H48C50.2091 52 52 50.2091 52 48V44" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h2>Arraste seus PDFs aqui</h2>
+                <p>ou clique para selecionar arquivos</p>
+                <p class="upload-hint">Aceita múltiplos arquivos DACTE/CT-e (.pdf)</p>
+                <input type="file" id="fileInput" multiple accept=".pdf" hidden>
+            </div>
+
+            <!-- File List -->
+            <div class="file-list" id="fileList" style="display: none;">
+                <div class="file-list-header">
+                    <h3>Arquivos Selecionados</h3>
+                    <button class="btn-clear" id="clearFiles">Limpar</button>
+                </div>
+                <ul id="fileItems"></ul>
+                <div class="upload-actions">
+                    <button class="btn btn-primary" id="processBtn">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M10 2V18M10 2L4 8M10 2L16 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Processar e Baixar Excel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Processing Indicator -->
+        <div class="card processing-card" id="processingCard" style="display: none;">
+            <div class="processing-animation">
+                <div class="spinner"></div>
+                <div class="processing-dots">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+            <h2>Processando DACTEs...</h2>
+            <p id="processingStatus">Extraindo dados dos PDFs</p>
+        </div>
+
+        <!-- Results Card -->
+        <div class="card results-card" id="resultsCard" style="display: none;">
+            <div class="results-header">
+                <div class="results-icon">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <circle cx="16" cy="16" r="14" stroke="var(--success)" stroke-width="2"/>
+                        <path d="M10 16L14 20L22 12" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2>Extração Concluída!</h2>
+                    <p id="resultsSummary"></p>
+                </div>
+            </div>
+            
+            <!-- Data Preview Table -->
+            <div class="table-wrapper">
+                <table id="previewTable">
+                    <thead>
+                        <tr>
+                            <th>CTE</th>
+                            <th>Tipo</th>
+                            <th>Data Emissão</th>
+                            <th>Planta</th>
+                            <th>Valor</th>
+                            <th>Valor Serviço</th>
+                            <th>Container</th>
+                        </tr>
+                    </thead>
+                    <tbody id="previewBody"></tbody>
+                </table>
+            </div>
+
+            <div class="results-actions">
+                <button class="btn btn-primary btn-download" id="downloadBtn">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M10 2V14M10 14L5 9M10 14L15 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M3 14V16C3 17.1046 3.89543 18 5 18H15C16.1046 18 17 17.1046 17 16V14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Baixar Excel
+                </button>
+                <button class="btn btn-secondary" id="newUploadBtn">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    Novo Upload
+                </button>
+            </div>
+        </div>
+
+        <!-- Error Card -->
+        <div class="card error-card" id="errorCard" style="display: none;">
+            <div class="error-icon">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <circle cx="16" cy="16" r="14" stroke="var(--error)" stroke-width="2"/>
+                    <path d="M12 12L20 20M20 12L12 20" stroke="var(--error)" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <h2>Erro no Processamento</h2>
+            <p id="errorMessage"></p>
+            <button class="btn btn-secondary" id="retryBtn">Tentar Novamente</button>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>DACTE PDF Extractor &mdash; Extração automática de CT-e para Excel</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
