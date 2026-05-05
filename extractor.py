@@ -27,6 +27,37 @@ def parse_br_currency(value_str: str) -> float:
         return 0.0
 
 
+def classify_tipo(origem: str, destino: str) -> str:
+    """
+    Classify the transport type based on origin and destination cities.
+    
+    Business rules:
+        - Plant (Indaiatuba/Sorocaba/Porto Feliz) → Sumaré = "Transferência"
+        - Port (Guarujá/Santos) → Sumaré = "Importação/{port}"
+        - Sumaré → Plant = "Entrega"
+        - Sumaré → Port (Guarujá/Santos) = "Exportação/{port}"
+    """
+    # Normalize to uppercase for comparison
+    orig = origem.upper().strip()
+    dest = destino.upper().strip()
+    
+    plants = {'INDAIATUBA', 'SOROCABA', 'PORTO FELIZ'}
+    ports = {'GUARUJA', 'SANTOS'}
+    company = 'SUMARE'
+    
+    if orig in plants and dest == company:
+        return 'Transferência'
+    elif orig in ports and dest == company:
+        return f'Importação/{origem.title()}'
+    elif orig == company and dest in plants:
+        return 'Entrega'
+    elif orig == company and dest in ports:
+        return f'Exportação/{destino.title()}'
+    else:
+        # Fallback: show origin → destination
+        return f'{origem.title()} → {destino.title()}'
+
+
 def extract_dacte_data(page_text: str) -> dict:
     """
     Extract all required fields from a single DACTE page text.
@@ -54,6 +85,17 @@ def extract_dacte_data(page_text: str) -> dict:
         m = re.search(r'N[ÚU]MERO\s+(\d{6,})', page_text, re.IGNORECASE)
         if m:
             result['cte'] = str(int(m.group(1)))
+    
+    # 1.5. Tipo - from ORIGEM DA PRESTAÇÃO and DESTINO DA PRESTAÇÃO
+    # PDF text pattern: "ORIGEM DA PRESTAÇÃO DESTINO DA PRESTAÇÃO\nCITY1/UF CITY2/UF"
+    m = re.search(
+        r'ORIGEM DA PRESTA.{1,5}O\s+DESTINO DA PRESTA.{1,5}O\s*\n\s*(\S+)/\S+\s+(\S+)/\S+',
+        page_text
+    )
+    if m:
+        origem_city = m.group(1).strip()
+        destino_city = m.group(2).strip()
+        result['tipo'] = classify_tipo(origem_city, destino_city)
     
     # 2. Data de Emissão
     m = re.search(r'DATA DE EMISS.O.*?(\d{2}/\d{2}/\d{4})', page_text, re.DOTALL)
