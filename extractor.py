@@ -103,11 +103,25 @@ def extract_dacte_data(page_text: str) -> dict:
         result['data_emissao'] = m.group(1)
     
     # 3. Planta (Município do Destinatário)
-    m = re.search(r'DESTINAT.RIO.*?MUNIC.PIO\s+([\w\s/À-Ú]+?)\s+CEP', page_text, re.DOTALL)
+    # The Destinatário is the Toyota plant. Due to horizontal text extraction, 
+    # Remetente and Destinatário fields are on the same line.
+    m = re.search(r'MUNIC.PIO.*?(?:CEP|CNPJ).*?MUNIC.PIO\s+([\w\s/À-Ú]+?)\s+CEP', page_text)
     if m:
         planta_raw = m.group(1).strip()
+    else:
+        # Fallback: search explicitly for known plant names near DESTINATÁRIO
+        m2 = re.search(r'DESTINAT.RIO.*?(INDAIATUBA|SOROCABA|PORTO\s*FELIZ)', page_text, re.DOTALL | re.IGNORECASE)
+        if m2:
+            planta_raw = m2.group(1).strip()
+        else:
+            m3 = re.search(r'DESTINAT.RIO.*?MUNIC.PIO\s+([\w\s/À-Ú]+?)\s+CEP', page_text, re.DOTALL)
+            planta_raw = m3.group(1).strip() if m3 else ""
+
+    if planta_raw:
         # Remove state abbreviation (e.g. "/ SP") and apply title case
         planta_raw = re.sub(r'\s*/\s*[A-Z]{2}\s*$', '', planta_raw).strip()
+        # Normalize Porto Feliz spacing if needed
+        planta_raw = re.sub(r'(?i)PORTO\s*FELIZ', 'Porto Feliz', planta_raw)
         result['planta'] = planta_raw.title()
     
     # 4. Valor Total da Mercadoria
