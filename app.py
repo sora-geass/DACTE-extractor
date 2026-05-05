@@ -104,17 +104,36 @@ def generate_excel(data_list: list) -> io.BytesIO:
                 cell.number_format = currency_format
                 cell.alignment = Alignment(horizontal='right', vertical='center')
     
-    # Auto-fit column widths
+    # Auto-fit column widths with currency-aware sizing
+    # Column minimum widths to prevent ### display
+    min_widths = {
+        'A': 10,   # CTE
+        'B': 10,   # Tipo
+        'C': 16,   # Data emissão
+        'D': 22,   # Planta
+        'E': 22,   # Valor (R$ 1.603.426,71 = ~18 chars)
+        'F': 20,   # Valor serviço (R$ 5.746,84 = ~14 chars)
+        'G': 16,   # CONTEINER
+    }
+    
     for column_cells in ws.columns:
         max_length = 0
         column_letter = column_cells[0].column_letter
         for cell in column_cells:
             try:
-                if cell.value:
-                    max_length = max(max_length, len(str(cell.value)))
+                if cell.value is not None:
+                    # For currency columns, estimate formatted width
+                    if column_letter in ('E', 'F') and isinstance(cell.value, (int, float)):
+                        # Format: "R$ 1.234.567,89" — estimate display length
+                        formatted = f"R$ {cell.value:,.2f}"
+                        max_length = max(max_length, len(formatted))
+                    else:
+                        max_length = max(max_length, len(str(cell.value)))
             except Exception:
                 pass
-        adjusted_width = min(max_length + 4, 30)
+        # Use the larger of calculated width or minimum width
+        min_w = min_widths.get(column_letter, 10)
+        adjusted_width = max(max_length + 4, min_w)
         ws.column_dimensions[column_letter].width = adjusted_width
     
     # Set row height for header
