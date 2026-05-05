@@ -63,7 +63,10 @@ def extract_dacte_data(page_text: str) -> dict:
     # 3. Planta (Município do Destinatário)
     m = re.search(r'DESTINAT.RIO.*?MUNIC.PIO\s+([\w\s/À-Ú]+?)\s+CEP', page_text, re.DOTALL)
     if m:
-        result['planta'] = m.group(1).strip()
+        planta_raw = m.group(1).strip()
+        # Remove state abbreviation (e.g. "/ SP") and apply title case
+        planta_raw = re.sub(r'\s*/\s*[A-Z]{2}\s*$', '', planta_raw).strip()
+        result['planta'] = planta_raw.title()
     
     # 4. Valor Total da Mercadoria
     # The value appears on the next line after "VALOR TOTAL DA MERCADORIA"
