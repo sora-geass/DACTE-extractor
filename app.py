@@ -47,11 +47,17 @@ def generate_excel(data_list: list) -> io.BytesIO:
         'planta': 'Planta',
         'valor': 'Valor',
         'valor_servico': 'Valor serviço',
-        'conteiner': 'CONTEINER'
+        'conteiner': 'CONTEINER',
+        'op_emissor': 'Op emissor',
+        'observacao': 'Observação',
+        'placa': 'PLACA',
+        'cte_substituto': 'CTE Substituto',
+        'empresa': 'Empresa'
     })
     
     # Ensure correct column order
-    columns = ['CTE', 'Tipo', 'Data emissão', 'Planta', 'Valor', 'Valor serviço', 'CONTEINER']
+    columns = ['CTE', 'Tipo', 'Data emissão', 'Planta', 'Valor', 'Valor serviço', 'CONTEINER', 
+               'Op emissor', 'Observação', 'PLACA', 'CTE Substituto', 'Empresa']
     for col in columns:
         if col not in df.columns:
             df[col] = ''
@@ -114,6 +120,11 @@ def generate_excel(data_list: list) -> io.BytesIO:
         'E': 22,   # Valor (R$ 1.603.426,71 = ~18 chars)
         'F': 20,   # Valor serviço (R$ 5.746,84 = ~14 chars)
         'G': 16,   # CONTEINER
+        'H': 12,   # Op emissor
+        'I': 12,   # Observação
+        'J': 10,   # PLACA
+        'K': 15,   # CTE Substituto
+        'L': 12,   # Empresa
     }
     
     for column_cells in ws.columns:

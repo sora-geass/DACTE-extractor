@@ -72,7 +72,12 @@ def extract_dacte_data(page_text: str) -> dict:
         'planta': '',
         'valor': 0.0,
         'valor_servico': 0.0,
-        'conteiner': 'N/A'
+        'conteiner': 'N/A',
+        'op_emissor': '',
+        'observacao': '',
+        'placa': '',
+        'cte_substituto': '',
+        'empresa': ''
     }
     
     # 1. CTE Number - from header "N.000059966" pattern
@@ -155,6 +160,17 @@ def extract_dacte_data(page_text: str) -> dict:
     else:
         result['conteiner'] = 'N/A'
     
+    # 7. Veículo/Placa verification
+    target_plates = ['TKD4H07', 'TJY0D20', 'TJY7J95', 'TIP3G54', 'TLK6C49']
+    for plate in target_plates:
+        if plate in page_text:
+            result['op_emissor'] = ''
+            result['observacao'] = 'SCANIA'
+            result['placa'] = plate
+            result['cte_substituto'] = ''
+            result['empresa'] = 'TOYOTA'
+            break
+            
     return result
 
 
