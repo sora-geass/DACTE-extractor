@@ -167,6 +167,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="valor-cell">${formatCurrency(row.valor)}</td>
                 <td class="valor-cell">${formatCurrency(row.valor_servico)}</td>
                 <td>${row.conteiner || 'N/A'}</td>
+                <td>${row.op_emissor || ''}</td>
+                <td>${row.observacao || ''}</td>
+                <td>${row.placa || ''}</td>
+                <td>${row.cte_substituto || ''}</td>
+                <td>${row.empresa || ''}</td>
             `;
             previewBody.appendChild(tr);
         });
