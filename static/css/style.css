@@ -4,34 +4,34 @@
    ============================================ */
 
 :root {
-    --primary: #4f46e5;
-    --primary-light: #6366f1;
-    --primary-dark: #3730a3;
-    --accent: #06b6d4;
-    --accent-light: #22d3ee;
+    --primary: #0C74B4;
+    --primary-light: #3095D2;
+    --primary-dark: #085B8F;
+    --accent: #08788C;
+    --accent-light: #209EB3;
     --success: #10b981;
     --success-light: #34d399;
     --error: #ef4444;
     --error-light: #f87171;
     --warning: #f59e0b;
 
-    --bg-primary: #0a0a1a;
-    --bg-secondary: #111127;
-    --bg-card: rgba(17, 17, 39, 0.7);
-    --bg-card-hover: rgba(25, 25, 55, 0.8);
-    --bg-glass: rgba(255, 255, 255, 0.03);
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F8FAFC;
+    --bg-card: #FFFFFF;
+    --bg-card-hover: #F1F5F9;
+    --bg-glass: rgba(0, 0, 0, 0.02);
 
-    --text-primary: #f1f5f9;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
+    --text-primary: #1E293B;
+    --text-secondary: #475569;
+    --text-muted: #64748B;
 
-    --border: rgba(255, 255, 255, 0.08);
-    --border-hover: rgba(255, 255, 255, 0.15);
+    --border: rgba(0, 0, 0, 0.1);
+    --border-hover: rgba(0, 0, 0, 0.15);
 
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
-    --shadow-glow: 0 0 40px rgba(79, 70, 229, 0.15);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-glow: 0 0 20px rgba(12, 116, 180, 0.15);
 
     --radius-sm: 8px;
     --radius-md: 16px;
@@ -71,9 +71,9 @@ body {
     z-index: 0;
     pointer-events: none;
     background:
-        radial-gradient(ellipse at 20% 50%, rgba(79, 70, 229, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 20%, rgba(6, 182, 212, 0.06) 0%, transparent 50%),
-        radial-gradient(ellipse at 40% 80%, rgba(16, 185, 129, 0.04) 0%, transparent 50%);
+        radial-gradient(ellipse at 20% 50%, rgba(12, 116, 180, 0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(8, 120, 140, 0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 40% 80%, rgba(16, 185, 129, 0.03) 0%, transparent 50%);
 }
 
 /* Floating particles */
@@ -88,7 +88,7 @@ body {
 .bg-particles::before {
     width: 300px;
     height: 300px;
-    background: radial-gradient(circle, rgba(79, 70, 229, 0.1), transparent 70%);
+    background: radial-gradient(circle, rgba(12, 116, 180, 0.06), transparent 70%);
     top: 10%;
     left: 15%;
 }
@@ -96,7 +96,7 @@ body {
 .bg-particles::after {
     width: 400px;
     height: 400px;
-    background: radial-gradient(circle, rgba(6, 182, 212, 0.08), transparent 70%);
+    background: radial-gradient(circle, rgba(8, 120, 140, 0.05), transparent 70%);
     bottom: 10%;
     right: 10%;
     animation-delay: -10s;
@@ -355,12 +355,12 @@ body {
 .btn-primary {
     background: linear-gradient(135deg, var(--primary), var(--primary-light));
     color: white;
-    box-shadow: 0 4px 16px rgba(79, 70, 229, 0.3);
+    box-shadow: 0 4px 16px rgba(12, 116, 180, 0.3);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(79, 70, 229, 0.4);
+    box-shadow: 0 8px 24px rgba(12, 116, 180, 0.4);
 }
 
 .btn-primary:active {
@@ -468,7 +468,7 @@ body {
 .results-header h2 {
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--success-light);
+    color: var(--success);
 }
 
 .results-header p {
@@ -491,7 +491,7 @@ table {
 }
 
 thead {
-    background: linear-gradient(135deg, #1B2A4A, #1e3a5f);
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
 }
 
 th {
@@ -500,7 +500,7 @@ th {
     font-weight: 600;
     color: white;
     white-space: nowrap;
-    border-bottom: 2px solid rgba(68, 114, 196, 0.5);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 td {
@@ -515,15 +515,15 @@ tbody tr {
 }
 
 tbody tr:hover {
-    background: rgba(79, 70, 229, 0.05);
+    background: rgba(12, 116, 180, 0.05);
 }
 
 tbody tr:nth-child(even) {
-    background: rgba(255, 255, 255, 0.015);
+    background: rgba(0, 0, 0, 0.015);
 }
 
 tbody tr:nth-child(even):hover {
-    background: rgba(79, 70, 229, 0.05);
+    background: rgba(12, 116, 180, 0.05);
 }
 
 .valor-cell {
