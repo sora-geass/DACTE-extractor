@@ -37,9 +37,16 @@ def classify_tipo(origem: str, destino: str) -> str:
         - Sumaré → Plant = "Entrega"
         - Sumaré → Port (Guarujá/Santos) = "Exportação/{port}"
     """
-    # Normalize to uppercase for comparison
-    orig = origem.upper().strip()
-    dest = destino.upper().strip()
+    # Normalize to uppercase, strip, and remove basic accents
+    def normalize(text):
+        t = text.upper().strip()
+        replacements = {'Á': 'A', 'À': 'A', 'Â': 'A', 'Ã': 'A', 'É': 'E', 'Ê': 'E', 'Í': 'I', 'Ó': 'O', 'Ô': 'O', 'Õ': 'O', 'Ú': 'U', 'Ç': 'C'}
+        for search, replace in replacements.items():
+            t = t.replace(search, replace)
+        return t
+        
+    orig = normalize(origem)
+    dest = normalize(destino)
     
     plants = {'INDAIATUBA', 'SOROCABA', 'PORTO FELIZ'}
     ports = {'GUARUJA', 'SANTOS'}
