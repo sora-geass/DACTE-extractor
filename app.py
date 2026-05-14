@@ -113,7 +113,7 @@ def generate_excel(data_list: list) -> io.BytesIO:
     currency_format = 'R$ #,##0.00'
     for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=5, max_col=6):
         for cell in row:
-            if cell.value is not None:
+            if cell.value is not None and isinstance(cell.value, (int, float)):
                 cell.number_format = currency_format
                 cell.alignment = Alignment(horizontal='right', vertical='center')
     
@@ -197,9 +197,10 @@ def upload_files():
             continue
         
         try:
-            # Save temporarily
+            # Save temporarily with unique name to prevent race conditions
             filename = secure_filename(file.filename)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            unique_filename = f"{__import__('uuid').uuid4().hex}_{filename}"
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
             file.save(filepath)
             
             # Extract data
@@ -261,7 +262,8 @@ def extract_preview():
         
         try:
             filename = secure_filename(file.filename)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            unique_filename = f"{__import__('uuid').uuid4().hex}_{filename}"
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
             file.save(filepath)
             
             extracted = extract_from_pdf(filepath)

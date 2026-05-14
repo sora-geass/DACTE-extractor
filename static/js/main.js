@@ -178,6 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function formatCurrency(value) {
+        if (typeof value === 'string' && value !== '') return value;
         if (!value && value !== 0) return '';
         return 'R$ ' + Number(value).toLocaleString('pt-BR', {
             minimumFractionDigits: 2,

@@ -177,6 +177,13 @@ def extract_dacte_data(page_text: str) -> dict:
             result['cte_substituto'] = ''
             result['empresa'] = 'TOYOTA'
             break
+    
+    # 8. Cancelamento — if the PDF has a "CANCELADO" watermark, override specific fields
+    if re.search(r'CANCELADO', page_text, re.IGNORECASE):
+        result['tipo'] = 'CANCELADO'
+        result['planta'] = 'CANCELADO'
+        result['valor'] = 'CANCELADO'
+        result['valor_servico'] = 'CANCELADO'
             
     return result
 
