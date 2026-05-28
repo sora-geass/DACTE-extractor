@@ -31,11 +31,11 @@ def classify_tipo(origem: str, destino: str) -> str:
     """
     Classify the transport type based on origin and destination cities.
     
-    Business rules:
-        - Plant (Indaiatuba/Sorocaba/Porto Feliz) → Sumaré = "Transferência"
-        - Port (Guarujá/Santos) → Sumaré = "Importação/{port}"
-        - Sumaré → Plant = "Entrega"
-        - Sumaré → Port (Guarujá/Santos) = "Exportação/{port}"
+    Business rules (applies to Sumaré and Jundiaí):
+        - Plant (Indaiatuba/Sorocaba/Porto Feliz) → Sumaré/Jundiaí = "Transferência"
+        - Port (Guarujá/Santos) → Sumaré/Jundiaí = "Importação/{port}"
+        - Sumaré/Jundiaí → Plant = "Entrega"
+        - Sumaré/Jundiaí → Port (Guarujá/Santos) = "Exportação/{port}"
     """
     # Normalize to uppercase, strip, and remove basic accents
     def normalize(text):
@@ -50,15 +50,15 @@ def classify_tipo(origem: str, destino: str) -> str:
     
     plants = {'INDAIATUBA', 'SOROCABA', 'PORTO FELIZ'}
     ports = {'GUARUJA', 'SANTOS'}
-    company = 'SUMARE'
+    companies = {'SUMARE', 'JUNDIAI'}
     
-    if orig in plants and dest == company:
+    if orig in plants and dest in companies:
         return 'Transferência'
-    elif orig in ports and dest == company:
+    elif orig in ports and dest in companies:
         return f'Importação/{origem.title()}'
-    elif orig == company and dest in plants:
+    elif orig in companies and dest in plants:
         return 'Entrega'
-    elif orig == company and dest in ports:
+    elif orig in companies and dest in ports:
         return f'Exportação/{destino.title()}'
     else:
         # Fallback: show origin → destination
