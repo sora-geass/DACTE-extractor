@@ -33,7 +33,7 @@ def classify_tipo(origem: str, destino: str) -> str:
     
     Business rules (applies to Sumaré and Jundiaí):
         - Plant (Indaiatuba/Sorocaba/Porto Feliz) → Sumaré/Jundiaí = "Transferência"
-        - Port (Guarujá/Santos) → Sumaré/Jundiaí = "Importação/{port}"
+        - Port (Guarujá/Santos) → Sumaré/Jundiaí OR Sorocaba = "Importação/{port}"
         - Sumaré/Jundiaí → Plant = "Entrega"
         - Sumaré/Jundiaí → Port (Guarujá/Santos) = "Exportação/{port}"
     """
@@ -54,7 +54,7 @@ def classify_tipo(origem: str, destino: str) -> str:
     
     if orig in plants and dest in companies:
         return 'Transferência'
-    elif orig in ports and dest in companies:
+    elif orig in ports and (dest in companies or dest == 'SOROCABA'):
         return f'Importação/{origem.title()}'
     elif orig in companies and dest in plants:
         return 'Entrega'
