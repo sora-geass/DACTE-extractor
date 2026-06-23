@@ -35,7 +35,7 @@ def classify_tipo(origem: str, destino: str) -> str:
         - Plant (Indaiatuba/Sorocaba/Porto Feliz) → Sumaré/Jundiaí = "Transferência"
         - Port (Guarujá/Santos) → Sumaré/Jundiaí OR Sorocaba = "Importação/{port}"
         - Sumaré/Jundiaí → Plant = "Entrega"
-        - Sumaré/Jundiaí → Port (Guarujá/Santos) = "Exportação/{port}"
+        - Sumaré/Jundiaí OR Sorocaba → Port (Guarujá/Santos) = "Exportação/{port}"
     """
     # Normalize to uppercase, strip, and remove basic accents
     def normalize(text):
@@ -58,7 +58,7 @@ def classify_tipo(origem: str, destino: str) -> str:
         return f'Importação/{origem.title()}'
     elif orig in companies and dest in plants:
         return 'Entrega'
-    elif orig in companies and dest in ports:
+    elif (orig in companies or orig == 'SOROCABA') and dest in ports:
         return f'Exportação/{destino.title()}'
     else:
         # Fallback: show origin → destination
